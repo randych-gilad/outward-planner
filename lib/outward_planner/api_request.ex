@@ -75,6 +75,7 @@ defmodule OutwardPlanner.ApiRequest do
 
   defp format_stats(stats) when is_binary(stats) do
     stats
+    |> String.replace(["[[", "]]"], "")
     |> String.split("=")
     |> Enum.map(&String.trim/1)
   end
