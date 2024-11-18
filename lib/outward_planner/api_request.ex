@@ -29,6 +29,7 @@ defmodule OutwardPlanner.ApiRequest do
            |> List.flatten(),
          %HTTPoison.Response{body: body} <-
            HTTPoison.get!(
+             # hardcoded ids for now until data format is decided
              OutwardPlanner.Query.Page.build(%OutwardPlanner.Query.Page{pageids: [100, 5097]})
            ) do
       body
@@ -53,7 +54,6 @@ defmodule OutwardPlanner.ApiRequest do
           content
           |> Map.get(:*)
           |> String.split("\n|", trim: true)
-          # |> Enum.slice(1, 27)
           |> Enum.filter(fn elem ->
             !String.contains?(elem, [
               "{{",
@@ -64,7 +64,8 @@ defmodule OutwardPlanner.ApiRequest do
               "DLC",
               "weight",
               "durability",
-              "size"
+              "size",
+              "reach"
             ])
           end)
           |> Enum.map(&format_stats/1)
