@@ -39,6 +39,7 @@ end
 defmodule OutwardPlanner.Query.Page do
   @moduledoc """
   Build Wiki.gg REST API query for page result by id.
+  Without prop, rvprop and rvslots API won't return page data.
   """
   @enforce_keys :pageids
   @type t :: %__MODULE__{
@@ -55,8 +56,6 @@ defmodule OutwardPlanner.Query.Page do
             rvslots: :main,
             format: :json
 
-  # https://outward.wiki.gg/api.php?action=query&pageids=2259&format=json
-  # https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json
   def build(%__MODULE__{} = params) do
     params.base_url <>
       ([
