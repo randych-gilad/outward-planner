@@ -49,27 +49,26 @@ defmodule OutwardPlanner.ApiRequest do
         |> Map.get(:slots)
         |> Map.get(:main)
 
-      %{
-        main:
-          content
-          |> Map.get(:*)
-          |> String.split("\n|", trim: true)
-          |> Enum.filter(fn elem ->
-            !String.contains?(elem, [
-              "{{",
-              "}}",
-              "buy",
-              "sell",
-              "related",
-              "DLC",
-              "weight",
-              "durability",
-              "size",
-              "reach"
-            ])
-          end)
-          |> Enum.map(&format_stats/1)
-      }
+      content
+      |> Map.get(:*)
+      |> String.split("\n|", trim: true)
+      |> Enum.filter(fn elem ->
+        !String.contains?(elem, [
+          "{{",
+          "}}",
+          "buy",
+          "sell",
+          "related",
+          "DLC",
+          "weight",
+          "durability",
+          "size",
+          "reach"
+        ])
+      end)
+      |> Enum.map(&format_stats/1)
+      |> Enum.map(fn [k, v] -> {k, v} end)
+      |> Enum.into(%{})
     end)
   end
 
