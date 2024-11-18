@@ -1,5 +1,4 @@
 defmodule OutwardPlanner.Query do
-  # https://outward.wiki.gg/api.php?action=query&list=categorymembers&cmtitle=Category:Daggers&cmlimit=max&format=json
   @moduledoc """
   Build Wiki.gg REST API query to be used in other modules.
   """
