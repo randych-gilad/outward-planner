@@ -73,17 +73,8 @@ defmodule OutwardPlanner.ApiRequest do
       end)
       |> Enum.map(&format_stats/1)
       |> Enum.map(fn [k, v] ->
-        atom_key = k |> Macro.underscore() |> String.to_atom()
-
-        parsed_value =
-          case Integer.parse(v) do
-            :error ->
-              v
-
-            {value_int, _} ->
-              value_int
-          end
-
+        atom_key = format_struct_key(k)
+        parsed_value = format_number(v)
         {atom_key, parsed_value}
       end)
       |> Enum.into(%{})
@@ -98,5 +89,21 @@ defmodule OutwardPlanner.ApiRequest do
     |> String.replace(["[[", "]]"], "")
     |> String.split("=")
     |> Enum.map(&String.trim/1)
+  end
+
+  defp format_struct_key(key) when is_binary(key) do
+    key
+    |> Macro.underscore()
+    |> String.to_atom()
+  end
+
+  defp format_number(number) when is_binary(number) do
+    case Float.parse(number) do
+      :error ->
+        number
+
+      {parsed_number, _} ->
+        Float.round(parsed_number)
+    end
   end
 end
