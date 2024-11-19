@@ -16,7 +16,7 @@ defmodule OutwardPlannerTest do
   test "build category member query" do
     with query <- %OutwardPlanner.Query.Page{pageids: 2259} do
       assert OutwardPlanner.Query.Page.build(query) ==
-               "https://outward.wiki.gg/api.php?action=query&pageids=2259&format=json"
+               "https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json"
     end
   end
 end
