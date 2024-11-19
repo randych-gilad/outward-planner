@@ -20,17 +20,16 @@ defmodule OutwardPlanner.ApiRequest do
     end
   end
 
-  def request_page() do
-    with pages <- request_category(:daggers),
-         _pageids <-
+  def request_page(category) do
+    with pages <- request_category(category),
+         pageids <-
            pages
            |> Enum.map(&Map.delete(&1, :title))
            |> Enum.map(&Map.values/1)
            |> List.flatten(),
          %HTTPoison.Response{body: body} <-
            HTTPoison.get!(
-             # hardcoded ids for now until data format is decided
-             OutwardPlanner.Query.Page.build(%OutwardPlanner.Query.Page{pageids: [100, 5097]})
+             OutwardPlanner.Query.Page.build(%OutwardPlanner.Query.Page{pageids: pageids})
            ) do
       body
       |> Jason.decode!(keys: :atoms)
@@ -43,6 +42,8 @@ defmodule OutwardPlanner.ApiRequest do
     page
     |> Map.values()
     |> Enum.map(fn page ->
+      title = page.title
+
       content =
         page.revisions
         |> List.first()
@@ -56,6 +57,10 @@ defmodule OutwardPlanner.ApiRequest do
         !String.contains?(elem, [
           "{{",
           "}}",
+          "image",
+          "object id",
+          "ingredient",
+          "style",
           "buy",
           "sell",
           "related",
@@ -82,6 +87,7 @@ defmodule OutwardPlanner.ApiRequest do
         {atom_key, parsed_value}
       end)
       |> Enum.into(%{})
+      |> Map.put(:name, title)
     end)
     |> Enum.map(&Map.filter(&1, fn {_k, v} -> v != "" end))
     |> Enum.map(&struct!(%OutwardPlanner.Stats.Weapon{}, &1))
