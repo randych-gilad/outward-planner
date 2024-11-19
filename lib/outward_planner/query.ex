@@ -26,13 +26,20 @@ defmodule OutwardPlanner.Query.Category do
          "list=" <>
            to_string(params.list),
          "cmtitle=Category:" <>
-           (to_string(params.cmtitle) |> String.capitalize()),
+           (to_string(params.cmtitle) |> format_category()),
          "cmlimit=" <>
            to_string(params.cmlimit),
          "format=" <>
            to_string(params.format)
        ]
        |> Enum.join("&"))
+  end
+
+  defp format_category(category) do
+    category
+    |> String.split("_")
+    |> Enum.map(&String.capitalize/1)
+    |> Enum.join("%20")
   end
 end
 
