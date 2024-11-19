@@ -6,24 +6,24 @@ defmodule OutwardPlanner.Query.Parser do
 
   def decode_to_page_content(body) do
     body
-    |> Jason.decode!(keys: :atoms)
-    |> get_in([:query, :pages])
+    |> Jason.decode!()
+    |> get_in(["query", "pages"])
   end
 
   def extract_page_content(%{} = page) do
     page
     |> Map.values()
     |> Enum.map(fn page ->
-      title = page.title
+      title = page["title"]
 
       content =
-        page.revisions
+        page["revisions"]
         |> List.first()
-        |> Map.get(:slots)
-        |> Map.get(:main)
+        |> Map.get("slots")
+        |> Map.get("main")
 
       content
-      |> Map.get(:*)
+      |> Map.get("*")
       |> String.split("\n|", trim: true)
       |> Enum.filter(&filter_stats/1)
       |> Enum.map(&format_stats/1)
