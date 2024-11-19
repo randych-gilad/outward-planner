@@ -3,6 +3,7 @@ defmodule OutwardPlannerTest do
   doctest OutwardPlanner
 
   alias OutwardPlanner.Query
+  alias OutwardPlanner.Stats
 
   @tag :local
   test "default", args do
@@ -22,11 +23,11 @@ defmodule OutwardPlannerTest do
   end
 
   @tag :api
-  test "get Zhorn's dagger struct" do
+  test "format Zhorn's dagger data to struct" do
     with query <- OutwardPlanner.ApiRequest.request_page(:daggers),
          zhorn_dagger <-
            Enum.find(query, fn map -> map.name == "Zhorn's Glowstone Dagger" end) do
-      assert zhorn_dagger == %OutwardPlanner.Stats.Weapon{
+      assert zhorn_dagger == %Stats.Weapon{
                attackspeed: 1.0,
                barrier: 0,
                class: "Dagger",
