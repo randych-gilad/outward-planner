@@ -2,11 +2,11 @@ defmodule OutwardPlanner.ApiRequest do
   @moduledoc """
   Functionality to query Wiki.gg REST API for page IDs in categories and page content.
   """
+  alias OutwardPlanner.Query
+  alias OutwardPlanner.Stats
 
   def request_category(category) do
-    HTTPoison.get!(
-      OutwardPlanner.Query.Category.build(%OutwardPlanner.Query.Category{cmtitle: category})
-    )
+    HTTPoison.get!(Query.Category.build(%Query.Category{cmtitle: category}))
     |> case do
       %HTTPoison.Response{body: body} ->
         body
@@ -28,9 +28,7 @@ defmodule OutwardPlanner.ApiRequest do
            |> Enum.map(&Map.values/1)
            |> List.flatten(),
          %HTTPoison.Response{body: body} <-
-           HTTPoison.get!(
-             OutwardPlanner.Query.Page.build(%OutwardPlanner.Query.Page{pageids: pageids})
-           ) do
+           HTTPoison.get!(Query.Page.build(%Query.Page{pageids: pageids})) do
       body
       |> Jason.decode!(keys: :atoms)
       |> get_in([:query, :pages])
@@ -81,7 +79,7 @@ defmodule OutwardPlanner.ApiRequest do
       |> Map.put(:name, title)
     end)
     |> Enum.map(&Map.filter(&1, fn {_k, v} -> v != "" end))
-    |> Enum.map(&struct!(%OutwardPlanner.Stats.Weapon{}, &1))
+    |> Enum.map(&struct!(%Stats.Weapon{}, &1))
   end
 
   defp format_stats(stats) when is_binary(stats) do

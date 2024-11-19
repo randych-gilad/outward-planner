@@ -2,6 +2,8 @@ defmodule OutwardPlannerTest do
   use ExUnit.Case
   doctest OutwardPlanner
 
+  alias OutwardPlanner.Query
+
   @tag :local
   test "default", args do
     assert OutwardPlanner.main(args) == :ok
@@ -9,16 +11,16 @@ defmodule OutwardPlannerTest do
 
   @tag :local
   test "build category members list query" do
-    with query <- %OutwardPlanner.Query.Category{cmtitle: :daggers} do
-      assert OutwardPlanner.Query.Category.build(query) ==
+    with query <- %Query.Category{cmtitle: :daggers} do
+      assert Query.Category.build(query) ==
                "https://outward.wiki.gg/api.php?action=query&list=categorymembers&cmtitle=Category:Daggers&cmlimit=max&format=json"
     end
   end
 
   @tag :local
   test "build category member query" do
-    with query <- %OutwardPlanner.Query.Page{pageids: 2259} do
-      assert OutwardPlanner.Query.Page.build(query) ==
+    with query <- %Query.Page{pageids: 2259} do
+      assert Query.Page.build(query) ==
                "https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json"
     end
   end
