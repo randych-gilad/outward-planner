@@ -67,9 +67,24 @@ defmodule OutwardPlanner.ApiRequest do
         ])
       end)
       |> Enum.map(&format_stats/1)
-      |> Enum.map(fn [k, v] -> {k, v} end)
+      |> Enum.map(fn [k, v] ->
+        atom_key = k |> Macro.underscore() |> String.to_atom()
+
+        parsed_value =
+          case Integer.parse(v) do
+            :error ->
+              v
+
+            {value_int, _} ->
+              value_int
+          end
+
+        {atom_key, parsed_value}
+      end)
       |> Enum.into(%{})
     end)
+    |> Enum.map(&Map.filter(&1, fn {_k, v} -> v != "" end))
+    |> Enum.map(&struct!(%OutwardPlanner.Stats.Weapon{}, &1))
   end
 
   defp format_stats(stats) when is_binary(stats) do

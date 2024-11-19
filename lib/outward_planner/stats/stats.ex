@@ -1,28 +1,26 @@
-defmodule OutwardPlanner.Stats.Damage do
-  defstruct physical: 0, ethereal: 0, fire: 0, frost: 0, lightning: 0, decay: 0
-end
-
-defmodule OutwardPlanner.Stats.Bonus do
-  defstruct physical: 0,
-            ethereal: 0,
-            fire: 0,
-            frost: 0,
-            lightning: 0,
-            decay: 0,
-            manacost_reduction: 0
-end
-
 defmodule OutwardPlanner.Stats.Weapon do
   defstruct name: "",
             class: "",
             type: "",
-            damage: %OutwardPlanner.Stats.Damage{},
-            impact: 0,
-            impact_resistance: 0,
-            attack_speed: 0,
-            stamina_cost: 0,
-            effects: "",
-            bonus: %OutwardPlanner.Stats.Bonus{},
+            set: "",
             protection: 0,
-            set: ""
+            barrier: 0,
+            impact_resistance: 0,
+            mana_cost_reduction: 0,
+            attackspeed: 0,
+            effects: "",
+            impact: 0,
+            physical: 0,
+            decay: 0,
+            ethereal: 0,
+            fire: 0,
+            frost: 0,
+            lightning: 0,
+            stamcost: 0,
+            physical_bonus: 0,
+            decay_bonus: 0,
+            ethereal_bonus: 0,
+            fire_bonus: 0,
+            frost_bonus: 0,
+            lightning_bonus: 0
 end
