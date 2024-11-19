@@ -30,10 +30,15 @@ defmodule OutwardPlanner.ApiRequest do
          %HTTPoison.Response{body: body} <-
            HTTPoison.get!(Query.Page.new(pageids)) do
       body
-      |> Jason.decode!(keys: :atoms)
-      |> get_in([:query, :pages])
+      |> decode_to_page_content()
       |> extract_page_content()
     end
+  end
+
+  defp decode_to_page_content(body) do
+    body
+    |> Jason.decode!(keys: :atoms)
+    |> get_in([:query, :pages])
   end
 
   defp extract_page_content(%{} = page) do
