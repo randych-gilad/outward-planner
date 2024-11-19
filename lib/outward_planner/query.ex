@@ -18,7 +18,10 @@ defmodule OutwardPlanner.Query.Category do
             cmlimit: :max,
             format: :json
 
-  def build(%__MODULE__{} = params) do
+  @spec new(atom()) :: String.t()
+  def new(cmtitle) when is_atom(cmtitle) do
+    params = %__MODULE__{cmtitle: cmtitle}
+
     params.base_url <>
       ([
          "action=" <>
@@ -46,6 +49,7 @@ end
 defmodule OutwardPlanner.Query.Page do
   @moduledoc """
   Build Wiki.gg REST API query for page result by id.
+
   Without prop, rvprop and rvslots API won't return page data.
   """
   @enforce_keys :pageids
@@ -63,7 +67,10 @@ defmodule OutwardPlanner.Query.Page do
             rvslots: :main,
             format: :json
 
-  def build(%__MODULE__{} = params) do
+  @spec new(non_neg_integer() | [non_neg_integer()]) :: String.t()
+  def new(pageids) when is_integer(pageids) or is_list(pageids) do
+    params = %__MODULE__{pageids: pageids}
+
     params.base_url <>
       ([
          "action=" <>

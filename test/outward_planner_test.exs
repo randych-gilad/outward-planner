@@ -11,18 +11,14 @@ defmodule OutwardPlannerTest do
 
   @tag :local
   test "build category members list query" do
-    with query <- %Query.Category{cmtitle: :daggers} do
-      assert Query.Category.build(query) ==
-               "https://outward.wiki.gg/api.php?action=query&list=categorymembers&cmtitle=Category:Daggers&cmlimit=max&format=json"
-    end
+    assert Query.Category.new(:daggers) ==
+             "https://outward.wiki.gg/api.php?action=query&list=categorymembers&cmtitle=Category:Daggers&cmlimit=max&format=json"
   end
 
   @tag :local
   test "build category member query" do
-    with query <- %Query.Page{pageids: 2259} do
-      assert Query.Page.build(query) ==
-               "https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json"
-    end
+    assert Query.Page.new(2259) ==
+             "https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json"
   end
 
   @tag :api

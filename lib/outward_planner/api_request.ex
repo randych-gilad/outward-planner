@@ -6,7 +6,7 @@ defmodule OutwardPlanner.ApiRequest do
   alias OutwardPlanner.Stats
 
   def request_category(category) do
-    HTTPoison.get!(Query.Category.build(%Query.Category{cmtitle: category}))
+    HTTPoison.get!(Query.Category.new(category))
     |> case do
       %HTTPoison.Response{body: body} ->
         body
@@ -28,7 +28,7 @@ defmodule OutwardPlanner.ApiRequest do
            |> Enum.map(&Map.values/1)
            |> List.flatten(),
          %HTTPoison.Response{body: body} <-
-           HTTPoison.get!(Query.Page.build(%Query.Page{pageids: pageids})) do
+           HTTPoison.get!(Query.Page.new(pageids)) do
       body
       |> Jason.decode!(keys: :atoms)
       |> get_in([:query, :pages])
@@ -51,24 +51,7 @@ defmodule OutwardPlanner.ApiRequest do
       content
       |> Map.get(:*)
       |> String.split("\n|", trim: true)
-      |> Enum.filter(fn elem ->
-        !String.contains?(elem, [
-          "{{",
-          "}}",
-          "image",
-          "object id",
-          "ingredient",
-          "style",
-          "buy",
-          "sell",
-          "related",
-          "DLC",
-          "weight",
-          "durability",
-          "size",
-          "reach"
-        ])
-      end)
+      |> Enum.filter(&filter_stats/1)
       |> Enum.map(&format_stats/1)
       |> Enum.map(fn [k, v] ->
         atom_key = format_struct_key(k)
@@ -82,8 +65,27 @@ defmodule OutwardPlanner.ApiRequest do
     |> Enum.map(&struct!(%Stats.Weapon{}, &1))
   end
 
-  defp format_stats(stats) when is_binary(stats) do
-    stats
+  defp filter_stats(stat) when is_binary(stat) do
+    !String.contains?(stat, [
+      "{{",
+      "}}",
+      "image",
+      "object id",
+      "ingredient",
+      "style",
+      "buy",
+      "sell",
+      "related",
+      "DLC",
+      "weight",
+      "durability",
+      "size",
+      "reach"
+    ])
+  end
+
+  defp format_stats(stat) when is_binary(stat) do
+    stat
     |> String.replace(["[[", "]]"], "")
     |> String.split("=")
     |> Enum.map(&String.trim/1)
