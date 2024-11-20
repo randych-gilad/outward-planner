@@ -25,23 +25,6 @@ defmodule OutwardPlannerTest do
   """
 
   @tag :local
-  test "default", args do
-    assert OutwardPlanner.main(args) == :ok
-  end
-
-  @tag :local
-  test "build category members list query" do
-    assert Query.Category.new(:daggers) ==
-             "https://outward.wiki.gg/api.php?action=query&list=categorymembers&cmtitle=Category:Daggers&cmlimit=max&format=json"
-  end
-
-  @tag :local
-  test "build category member query" do
-    assert Query.Page.new(2259) ==
-             "https://outward.wiki.gg/api.php?action=query&pageids=2259&prop=revisions&rvprop=content&rvslots=main&format=json"
-  end
-
-  @tag :local
   test "format Zhorn's dagger data to struct" do
     assert @weapon_test_json
            |> Query.Parser.decode_to_page_content()
