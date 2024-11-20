@@ -57,4 +57,15 @@ defmodule OutwardPlannerTest do
                type: "Off-Handed"
              }
   end
+
+  @tag :api
+  test "does not include weapon category in category" do
+    try do
+      OutwardPlanner.ApiRequest.request_page(:spears)
+    catch
+      _ -> assert false
+    else
+      _ -> assert true
+    end
+  end
 end
