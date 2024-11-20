@@ -3,6 +3,7 @@ defmodule OutwardPlanner.Query.Parser do
   Module to parse JSON data received from queries.
   """
   alias OutwardPlanner.Stats
+  alias __MODULE__.WikiAPIError
 
   # This is not useful because it is usable in ApiRequest.request_category which is unrelated side effect
   @mainhand [:axes, :bows, :maces, :polearms, :spears, :swords, :gauntlets]
@@ -13,8 +14,16 @@ defmodule OutwardPlanner.Query.Parser do
   def decode_to_page_content(body) do
     body
     |> Jason.decode!()
+    |> raise_api_error!()
     |> get_in(["query", "pages"])
   end
+
+  defp raise_api_error!(%{"error" => error}) do
+    message = error["info"] || "Unknown API error"
+    raise WikiAPIError, message: "API Error: #{message}"
+  end
+
+  defp raise_api_error!(response), do: response
 
   def extract_page_content(%{} = page) do
     page
