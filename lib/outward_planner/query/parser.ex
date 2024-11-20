@@ -4,6 +4,12 @@ defmodule OutwardPlanner.Query.Parser do
   """
   alias OutwardPlanner.Stats
 
+  # This is not useful because it is usable in ApiRequest.request_category which is unrelated side effect
+  @mainhand [:axes, :bows, :maces, :polearms, :spears, :swords, :gauntlets]
+  @offhand [:chakrams, :daggers, :pistols, :lanterns, :lexicons, :shields]
+  @weapons @mainhand ++ @offhand
+  @armor [:helmets, :body_armor, :boots, :backpacks]
+
   def decode_to_page_content(body) do
     body
     |> Jason.decode!()
