@@ -32,7 +32,6 @@ defmodule OutwardPlanner.Query.Category do
       (category
        |> to_string()
        |> String.split("_")
-       |> Enum.map(&String.capitalize/1)
-       |> Enum.join("%20"))
+       |> Enum.map_join(" ", &String.capitalize/1))
   end
 end
