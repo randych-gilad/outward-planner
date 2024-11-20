@@ -4,44 +4,32 @@ defmodule OutwardPlanner.Query.Category do
   """
   @enforce_keys :cmtitle
   @type t :: %__MODULE__{
-          base_url: String.t(),
           action: atom(),
           list: atom(),
           cmtitle: atom(),
           cmlimit: atom(),
           format: atom()
         }
-  defstruct base_url: OutwardPlanner.base_url(),
-            action: :query,
+  defstruct action: :query,
             list: :categorymembers,
             cmtitle: :empty,
             cmlimit: :max,
             format: :json
 
   @spec new(atom()) :: String.t()
-  def new(cmtitle) when is_atom(cmtitle) do
-    params = %__MODULE__{cmtitle: cmtitle}
-
-    params.base_url <>
-      ([
-         "action=" <>
-           to_string(params.action),
-         "list=" <>
-           to_string(params.list),
-         "cmtitle=Category:" <>
-           (to_string(params.cmtitle) |> format_category()),
-         "cmlimit=" <>
-           to_string(params.cmlimit),
-         "format=" <>
-           to_string(params.format)
-       ]
-       |> Enum.join("&"))
+  def new(category) when is_atom(category) do
+    OutwardPlanner.base_url() <>
+      (%__MODULE__{cmtitle: format_category(category)}
+       |> Map.from_struct()
+       |> URI.encode_query())
   end
 
   defp format_category(category) do
-    category
-    |> String.split("_")
-    |> Enum.map(&String.capitalize/1)
-    |> Enum.join("%20")
+    "Category:" <>
+      (category
+       |> to_string()
+       |> String.split("_")
+       |> Enum.map(&String.capitalize/1)
+       |> Enum.join("%20"))
   end
 end

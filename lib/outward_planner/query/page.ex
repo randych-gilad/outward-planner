@@ -6,13 +6,14 @@ defmodule OutwardPlanner.Query.Page do
   """
   @enforce_keys :pageids
   @type t :: %__MODULE__{
-          base_url: String.t(),
           action: atom(),
           pageids: non_neg_integer() | [non_neg_integer()],
+          prop: atom(),
+          rvprop: atom(),
+          rvslots: atom(),
           format: atom()
         }
-  defstruct base_url: OutwardPlanner.base_url(),
-            action: :query,
+  defstruct action: :query,
             pageids: 0,
             prop: :revisions,
             rvprop: :content,
@@ -21,24 +22,10 @@ defmodule OutwardPlanner.Query.Page do
 
   @spec new(non_neg_integer() | [non_neg_integer()]) :: String.t()
   def new(pageids) when is_integer(pageids) or is_list(pageids) do
-    params = %__MODULE__{pageids: pageids}
-
-    params.base_url <>
-      ([
-         "action=" <>
-           to_string(params.action),
-         "pageids=" <>
-           parse_ids(params.pageids),
-         "prop=" <>
-           to_string(params.prop),
-         "rvprop=" <>
-           to_string(params.rvprop),
-         "rvslots=" <>
-           to_string(params.rvslots),
-         "format=" <>
-           to_string(params.format)
-       ]
-       |> Enum.join("&"))
+    OutwardPlanner.base_url() <>
+      (%__MODULE__{pageids: parse_ids(pageids)}
+       |> Map.from_struct()
+       |> URI.encode_query())
   end
 
   defp parse_ids(page_ids) when is_list(page_ids) do
