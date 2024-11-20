@@ -11,7 +11,7 @@ defmodule OutwardPlanner.Query.Parser do
   @weapons @mainhand ++ @offhand
   @armor [:helmets, :body_armor, :boots, :backpacks]
 
-  def decode_to_page_content(body) do
+  def decode_page_content!(body) do
     body
     |> Jason.decode!()
     |> raise_api_error!()

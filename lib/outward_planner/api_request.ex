@@ -29,7 +29,7 @@ defmodule OutwardPlanner.ApiRequest do
          %HTTPoison.Response{body: body} <-
            HTTPoison.get!(Query.Page.new(pageids)) do
       body
-      |> Query.Parser.decode_to_page_content()
+      |> Query.Parser.decode_page_content!()
       |> Query.Parser.extract_page_content()
     end
   end
