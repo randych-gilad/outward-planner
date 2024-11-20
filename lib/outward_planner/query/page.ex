@@ -22,10 +22,13 @@ defmodule OutwardPlanner.Query.Page do
 
   @spec new(non_neg_integer() | [non_neg_integer()]) :: String.t()
   def new(pageids) when is_integer(pageids) or is_list(pageids) do
-    OutwardPlanner.base_url() <>
-      (%__MODULE__{pageids: parse_ids(pageids)}
-       |> Map.from_struct()
-       |> URI.encode_query())
+    URI.parse(OutwardPlanner.base_url())
+    |> URI.append_query(
+      %__MODULE__{pageids: parse_ids(pageids)}
+      |> Map.from_struct()
+      |> URI.encode_query()
+    )
+    |> URI.to_string()
   end
 
   defp parse_ids(page_ids) when is_list(page_ids) do

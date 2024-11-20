@@ -18,10 +18,13 @@ defmodule OutwardPlanner.Query.Category do
 
   @spec new(atom()) :: String.t()
   def new(category) when is_atom(category) do
-    OutwardPlanner.base_url() <>
-      (%__MODULE__{cmtitle: format_category(category)}
-       |> Map.from_struct()
-       |> URI.encode_query())
+    URI.parse(OutwardPlanner.base_url())
+    |> URI.append_query(
+      %__MODULE__{cmtitle: format_category(category)}
+      |> Map.from_struct()
+      |> URI.encode_query()
+    )
+    |> URI.to_string()
   end
 
   defp format_category(category) do
