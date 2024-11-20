@@ -23,7 +23,7 @@ defmodule OutwardPlanner.ApiRequest do
     with pages <- request_category(category),
          pageids <-
            pages
-           |> Enum.map(&Map.delete(&1, :title))
+           |> Enum.map(&Map.delete(&1, "title"))
            |> Enum.map(&Map.values/1)
            |> List.flatten(),
          %HTTPoison.Response{body: body} <-
