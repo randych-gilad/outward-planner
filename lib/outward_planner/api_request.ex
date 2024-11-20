@@ -9,10 +9,10 @@ defmodule OutwardPlanner.ApiRequest do
     |> case do
       %HTTPoison.Response{body: body} ->
         body
-        |> Jason.decode!(keys: :atoms)
-        |> Map.get(:query)
-        |> Map.get(:categorymembers)
-        |> Enum.map(&Map.delete(&1, :ns))
+        |> Jason.decode!()
+        |> Map.get("query")
+        |> Map.get("categorymembers")
+        |> Enum.map(&Map.delete(&1, "ns"))
 
       %HTTPoison.Response{status_code: status} ->
         {:error, "category request status code: #{status}"}
