@@ -1,4 +1,7 @@
 defmodule OutwardPlanner.Stats.Skill.Breakthrough do
+  @moduledoc """
+  Breakthrough skill.
+  """
   defstruct name: "",
             effects: "",
             skilltype: "",
