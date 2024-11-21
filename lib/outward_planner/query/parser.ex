@@ -7,7 +7,7 @@ defmodule OutwardPlanner.Query.Parser do
   @mainhand ~w(Axes Bows Maces Polearms Spears Swords Gauntlets)
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
   @weapons @mainhand ++ @offhand
-  @armor ~w(Helmets Chest Legs Backpacks)
+  @armor ~w(Helmets Chest Boots Backpacks) ++ ["Body Armor"]
 
   def extract_page_content(%{} = page) do
     page
@@ -32,7 +32,7 @@ defmodule OutwardPlanner.Query.Parser do
     end)
     |> Enum.reject(&exclude_category_page/1)
     |> Enum.map(&exclude_empty_values/1)
-    |> Enum.map(&struct!(decide_class(&1), &1))
+    |> Enum.map(&struct!(decide_class!(&1), &1))
   end
 
   def filter_stats(stat) when is_binary(stat) do
@@ -55,7 +55,11 @@ defmodule OutwardPlanner.Query.Parser do
       "prereq",
       "action0",
       "action1",
-      "action2"
+      "action2",
+      "location",
+      "blacksmith",
+      "station",
+      "slot"
     ])
   end
 
@@ -98,20 +102,35 @@ defmodule OutwardPlanner.Query.Parser do
        categories
        |> Enum.map(fn category ->
          case category do
-           "Legs" -> "Legs"
+           "Boots" -> "Boots"
            other -> String.trim_trailing(other, "s")
          end
        end)}
     end)
   end
 
-  defp decide_class(%{class: class}) do
+  defp decide_class!(%{class: class} = item) do
     classes = category_to_class()
 
-    cond do
-      class == "Backpack" -> %Stats.Backpack{}
-      class in classes.weapons -> %Stats.Weapon{}
-      class in classes.armor -> %Stats.Armor{}
+    case class do
+      "Backpack" ->
+        %Stats.Backpack{}
+
+      "Body Armor" ->
+        %Stats.Armor{class: "Chest"}
+
+      "Head" ->
+        %Stats.Armor{class: "Helmet"}
+
+      class when class in ["Foot", "Legs"] ->
+        %Stats.Armor{class: "Boots"}
+
+      _ ->
+        cond do
+          class in classes.weapons -> %Stats.Weapon{}
+          class in classes.armor -> %Stats.Armor{}
+          true -> raise KeyError, {:error, item}
+        end
     end
   end
 end

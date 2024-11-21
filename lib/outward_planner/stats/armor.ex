@@ -15,9 +15,11 @@ defmodule OutwardPlanner.Stats.Armor do
             mana_cost_reduction: 0,
             stamina_cost_reduction: 0,
             movespeed: 0,
+            cooldown: 0,
+            effects: "",
+            pouch: 0,
             decay: 0,
             decay_bonus: 0,
-            effects: "",
             ethereal: 0,
             ethereal_bonus: 0,
             fire: 0,
@@ -30,5 +32,7 @@ defmodule OutwardPlanner.Stats.Armor do
             physical: 0,
             physical_bonus: 0,
             coldresist: 0,
-            heatresist: 0
+            heatresist: 0,
+            corruptresist: 0,
+            status_resist: 0
 end
