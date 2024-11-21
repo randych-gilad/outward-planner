@@ -46,7 +46,6 @@ defmodule OutwardPlannerTest do
   @tag :local
   test "format Zhorn's dagger data to struct" do
     assert @weapon_test_json
-           |> Query.Parser.decode_page_content!()
            |> Query.Parser.extract_page_content()
            |> Enum.find(fn map -> map.name == "Zhorn's Glowstone Dagger" end) ==
              %Stats.Weapon{
@@ -80,7 +79,6 @@ defmodule OutwardPlannerTest do
   @tag :local
   test "weapon category page filtered before creating weapon struct" do
     assert @weapon_category_json
-           |> Query.Parser.decode_page_content!()
            |> Query.Parser.extract_page_content() == []
   end
 end
