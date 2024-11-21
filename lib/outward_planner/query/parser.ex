@@ -7,7 +7,7 @@ defmodule OutwardPlanner.Query.Parser do
   @mainhand ~w(Axes Bows Maces Polearms Spears Swords Gauntlets)
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
   @weapons @mainhand ++ @offhand
-  @armor ~w(Helmets Chest Boots Backpacks) ++ ["Body Armor"]
+  @armor ~w(Helmets Boots Backpacks) ++ ["Body Armor"]
 
   def extract_page_content(%{} = page) do
     page
@@ -40,7 +40,8 @@ defmodule OutwardPlanner.Query.Parser do
       "{{",
       "}}",
       "image",
-      "object id",
+      "object",
+      "count",
       "ingredient",
       "style",
       "buy",
@@ -116,7 +117,7 @@ defmodule OutwardPlanner.Query.Parser do
       "Backpack" ->
         %Stats.Backpack{}
 
-      "Body Armor" ->
+      class when class in ["Body Armor", "Chest"] ->
         %Stats.Armor{class: "Chest"}
 
       "Head" ->
