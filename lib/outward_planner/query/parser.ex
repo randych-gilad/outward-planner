@@ -2,8 +2,8 @@ defmodule OutwardPlanner.Query.Parser do
   @moduledoc """
   Module to parse JSON data received from queries.
   """
-  alias OutwardPlanner.Stats
   alias __MODULE__.WikiAPIError
+  alias OutwardPlanner.Stats
 
   @mainhand ~w(Axes Bows Maces Polearms Spears Swords Gauntlets)
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
