@@ -50,7 +50,12 @@ defmodule OutwardPlanner.Query.Parser do
       "weight",
       "durability",
       "size",
-      "reach"
+      "reach",
+      "manual",
+      "prereq",
+      "action0",
+      "action1",
+      "action2"
     ])
   end
 
