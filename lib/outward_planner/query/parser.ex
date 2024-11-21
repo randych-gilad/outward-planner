@@ -8,7 +8,7 @@ defmodule OutwardPlanner.Query.Parser do
   @mainhand ~w(Axes Bows Maces Polearms Spears Swords Gauntlets)
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
   @weapons @mainhand ++ @offhand
-  @armor ~w(Helmets Body Armor Boots Backpacks) ++ ["Body Armor"]
+  @armor ~w(Helmets Boots Backpacks) ++ ["Body Armor"]
 
   def decode_page_content!(body) do
     body
