@@ -1,4 +1,9 @@
 defmodule OutwardPlanner.Stats.Backpack do
+  @moduledoc """
+  Backpack struct.
+
+  Invent_prot refers to inventory protection.
+  """
   defstruct name: "",
             set: "",
             class: "",

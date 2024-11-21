@@ -2,6 +2,7 @@ defmodule OutwardPlanner.ApiRequest do
   @moduledoc """
   Functionality to query Wiki.gg REST API for page IDs in categories and page content.
   """
+  alias __MODULE__.WikiAPIError
   alias OutwardPlanner.Query
 
   def request_category(category) do
@@ -26,8 +27,13 @@ defmodule OutwardPlanner.ApiRequest do
          %Req.Response{body: body} <-
            Req.get!(Query.Page.new(pageids)) do
       case is_map_key(body, "error") do
-        true -> Query.Parser.extract_page_content(body, length(pageids))
-        _ -> Query.Parser.extract_page_content(body["query"]["pages"])
+        true ->
+          message = body["error"]["info"] || "Unknown API error"
+          pages = length(pageids)
+          raise WikiAPIError, message: "API Error: #{message} Requested #{pages} values."
+
+        _ ->
+          Query.Parser.extract_page_content(body["query"]["pages"])
       end
     end
   end

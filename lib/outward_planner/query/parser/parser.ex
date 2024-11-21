@@ -2,7 +2,6 @@ defmodule OutwardPlanner.Query.Parser do
   @moduledoc """
   Module to parse JSON data received from queries.
   """
-  alias __MODULE__.WikiAPIError
   alias OutwardPlanner.Stats
 
   @mainhand ~w(Axes Bows Maces Polearms Spears Swords Gauntlets)
@@ -10,19 +9,9 @@ defmodule OutwardPlanner.Query.Parser do
   @weapons @mainhand ++ @offhand
   @armor ~w(Helmets Chest Legs Backpacks)
 
-  def extract_page_content(%{"error" => error}, pages) do
-    message = error["info"] || "Unknown API error"
-    raise WikiAPIError, message: "API Error: #{message} Requested #{pages} values."
-  end
-
-  # def extract_page_content(nil) do
-  #   raise ArgumentError, message: "Category input could not produce valid answer"
-  # end
-
   def extract_page_content(%{} = page) do
     page
     |> Map.values()
-    |> dbg()
     |> Enum.map(fn page ->
       title = page["title"]
 
@@ -97,7 +86,7 @@ defmodule OutwardPlanner.Query.Parser do
     |> Map.filter(fn {_k, v} -> v != "" end)
   end
 
-  defp category_to_class() do
+  defp category_to_class do
     %{weapons: @weapons, armor: @armor}
     |> Map.new(fn {key, categories} ->
       {key,
