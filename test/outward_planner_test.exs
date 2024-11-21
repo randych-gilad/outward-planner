@@ -122,7 +122,7 @@ defmodule OutwardPlannerTest do
 
   @tag :local
   test "invalid class page raises KeyError" do
-    assert_raise KeyError, fn ->
+    assert_raise ArgumentError, fn ->
       @backpack_broken_test_response["query"]["pages"]
       |> Query.Parser.extract_page_content()
     end
