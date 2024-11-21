@@ -25,7 +25,7 @@ defmodule OutwardPlanner.Query.Parser do
       |> Enum.map(&format_stats/1)
       |> Enum.map(fn [k, v] ->
         atom_key = format_struct_key(k)
-        parsed_value = format_number(v)
+        parsed_value = format_struct_value(v)
         {atom_key, parsed_value}
       end)
       |> Enum.into(%{})
@@ -79,13 +79,16 @@ defmodule OutwardPlanner.Query.Parser do
     |> String.to_atom()
   end
 
-  defp format_number(number) when is_binary(number) do
-    case Float.parse(number) do
+  defp format_struct_value(value) when is_binary(value) do
+    case Float.parse(value) do
       :error ->
-        number
+        value
 
       {parsed_number, _} ->
-        Float.round(parsed_number)
+        case String.contains?(value, ".") do
+          true -> Float.round(parsed_number)
+          false -> trunc(parsed_number)
+        end
     end
   end
 
