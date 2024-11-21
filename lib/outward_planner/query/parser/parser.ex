@@ -10,38 +10,26 @@ defmodule OutwardPlanner.Query.Parser do
   @weapons @mainhand ++ @offhand
   @armor ~w(Helmets Chest Legs Backpacks)
 
-  def decode_page_content!(body) do
-    body
-    |> Jason.decode!()
-    |> raise_api_error!()
-    |> get_in(["query", "pages"])
-  end
-
-  defp raise_api_error!(%{"error" => error}) do
+  def extract_page_content(%{"error" => error}, pages) do
     message = error["info"] || "Unknown API error"
-    raise WikiAPIError, message: "API Error: #{message}"
+    raise WikiAPIError, message: "API Error: #{message} Requested #{pages} values."
   end
 
-  defp raise_api_error!(response), do: response
-
-  def extract_page_content(nil) do
-    raise ArgumentError, message: "Category input could not produce valid answer"
-  end
+  # def extract_page_content(nil) do
+  #   raise ArgumentError, message: "Category input could not produce valid answer"
+  # end
 
   def extract_page_content(%{} = page) do
     page
     |> Map.values()
+    |> dbg()
     |> Enum.map(fn page ->
       title = page["title"]
 
       content =
-        page["revisions"]
-        |> List.first()
-        |> Map.get("slots")
-        |> Map.get("main")
+        List.first(page["revisions"])["slots"]["main"]["*"]
 
       content
-      |> Map.get("*")
       |> String.split("\n|", trim: true)
       |> Enum.filter(&filter_stats/1)
       |> Enum.map(&format_stats/1)

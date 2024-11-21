@@ -5,16 +5,13 @@ defmodule OutwardPlanner.ApiRequest do
   alias OutwardPlanner.Query
 
   def request_category(category) do
-    HTTPoison.get!(Query.Category.new(category))
+    Req.get!(Query.Category.new(category))
     |> case do
-      %HTTPoison.Response{body: body} ->
-        body
-        |> Jason.decode!()
-        |> Map.get("query")
-        |> Map.get("categorymembers")
+      %Req.Response{status: 200, body: body} ->
+        body["query"]["categorymembers"]
         |> Enum.map(&Map.delete(&1, "ns"))
 
-      %HTTPoison.Response{status_code: status} ->
+      %Req.Response{status: status} ->
         {:error, "category request status code: #{status}"}
     end
   end
@@ -26,11 +23,12 @@ defmodule OutwardPlanner.ApiRequest do
            |> Enum.map(&Map.delete(&1, "title"))
            |> Enum.map(&Map.values/1)
            |> List.flatten(),
-         %HTTPoison.Response{body: body} <-
-           HTTPoison.get!(Query.Page.new(pageids)) do
-      body
-      |> Query.Parser.decode_page_content!()
-      |> Query.Parser.extract_page_content()
+         %Req.Response{body: body} <-
+           Req.get!(Query.Page.new(pageids)) do
+      case is_map_key(body, "error") do
+        true -> Query.Parser.extract_page_content(body, length(pageids))
+        _ -> Query.Parser.extract_page_content(body["query"]["pages"])
+      end
     end
   end
 end

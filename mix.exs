@@ -24,7 +24,7 @@ defmodule OutwardPlanner.MixProject do
   defp deps do
     [
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
-      {:httpoison, "~> 2.0"}
+      {:req, "~> 0.5.0"}
     ]
   end
 
