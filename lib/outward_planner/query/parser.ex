@@ -130,7 +130,7 @@ defmodule OutwardPlanner.Query.Parser do
         cond do
           class in classes.weapons -> %Stats.Weapon{}
           class in classes.armor -> %Stats.Armor{}
-          true -> raise KeyError, {:error, item}
+          true -> raise KeyError, "Invalid class #{class} of item #{item.name}"
         end
     end
   end
