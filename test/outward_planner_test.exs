@@ -78,11 +78,9 @@ defmodule OutwardPlannerTest do
   end
 
   @tag :local
-  test "weapon category page cannot fit into weapon struct" do
-    assert_raise KeyError, fn ->
-      @weapon_category_json
-      |> Query.Parser.decode_page_content!()
-      |> Query.Parser.extract_page_content()
-    end
+  test "weapon category page filtered before creating weapon struct" do
+    assert @weapon_category_json
+           |> Query.Parser.decode_page_content!()
+           |> Query.Parser.extract_page_content() == []
   end
 end
