@@ -24,6 +24,10 @@ defmodule OutwardPlanner.Query.Parser do
 
   defp raise_api_error!(response), do: response
 
+  def extract_page_content(nil) do
+    raise ArgumentError, message: "Category input could not produce valid answer"
+  end
+
   def extract_page_content(%{} = page) do
     page
     |> Map.values()
