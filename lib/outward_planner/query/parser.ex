@@ -8,6 +8,7 @@ defmodule OutwardPlanner.Query.Parser do
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
   @weapons @mainhand ++ @offhand
   @armor ~w(Helmets Boots Backpacks) ++ ["Body Armor"]
+  @skill_types ~w(Breakthrough)
 
   def extract_page_content(%{} = page) do
     page
@@ -32,7 +33,7 @@ defmodule OutwardPlanner.Query.Parser do
     end)
     |> Enum.reject(&exclude_category_page/1)
     |> Enum.map(&exclude_empty_values/1)
-    |> Enum.map(&struct!(decide_class!(&1), &1))
+    |> Enum.map(&struct!(decide_struct_category!(&1), &1))
   end
 
   def filter_stats(stat) when is_binary(stat) do
@@ -60,7 +61,8 @@ defmodule OutwardPlanner.Query.Parser do
       "location",
       "blacksmith",
       "station",
-      "slot"
+      "slot",
+      "trainer"
     ])
   end
 
@@ -88,7 +90,7 @@ defmodule OutwardPlanner.Query.Parser do
   end
 
   defp exclude_category_page(page) do
-    page.name in (@weapons ++ @armor)
+    page.name in (@weapons ++ @armor ++ @skill_types)
   end
 
   defp exclude_empty_values(pages) do
@@ -110,7 +112,26 @@ defmodule OutwardPlanner.Query.Parser do
     end)
   end
 
-  defp decide_class!(%{class: class} = item) do
+  defp decide_struct_category!(%{name: name, skilltype: skilltype} = skill) do
+    subtype = Map.get(skill, :subtype)
+
+    case {skilltype, subtype} do
+      {_, "Breakthrough"} ->
+        %Stats.Skill.Breakthrough{}
+
+      {"Active", _} ->
+        %Stats.Skill.Active{}
+
+      {"Passive", _} ->
+        %Stats.Skill.Passive{}
+
+      _ ->
+        raise ArgumentError,
+              "Invalid skilltype #{skilltype} and/or subtype #{subtype} of skill #{name}"
+    end
+  end
+
+  defp decide_struct_category!(%{name: name, class: class}) do
     classes = category_to_class()
 
     case class do
@@ -130,7 +151,7 @@ defmodule OutwardPlanner.Query.Parser do
         cond do
           class in classes.weapons -> %Stats.Weapon{}
           class in classes.armor -> %Stats.Armor{}
-          true -> raise KeyError, "Invalid class #{class} of item #{item.name}"
+          true -> raise ArgumentError, "Invalid class #{class} of item #{name}"
         end
     end
   end
