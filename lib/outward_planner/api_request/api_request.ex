@@ -33,18 +33,6 @@ defmodule OutwardPlanner.ApiRequest do
     end
   end
 
-  # DRAFT
-  # def exists_in_db?() do
-  #   OutwardPlanner.ApiRequest.request_category(:lexicons)
-  #   |> Enum.map(fn map ->
-  #     map
-  #     |> Map.new(fn
-  #       {"title", value} -> {"name", value}
-  #       {key, value} -> {key, value}
-  #     end)
-  #   end)
-  # end
-
   def insert_pages(category) when is_atom(category) do
     request_pages(category)
     |> Enum.map(&Repo.insert(&1, on_conflict: :nothing))
