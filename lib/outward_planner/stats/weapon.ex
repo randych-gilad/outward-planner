@@ -6,28 +6,32 @@ defmodule OutwardPlanner.Stats.Weapon do
 
   Elements with bonus refer to % damage increase.
   """
-  defstruct name: "",
-            class: "",
-            type: "",
-            set: "",
-            protection: 0,
-            barrier: 0,
-            impact_resistance: 0,
-            mana_cost_reduction: 0,
-            stamcost: 0,
-            attackspeed: 0,
-            effects: "",
-            impact: 0,
-            physical: 0,
-            physical_bonus: 0,
-            decay: 0,
-            decay_bonus: 0,
-            ethereal_bonus: 0,
-            ethereal: 0,
-            fire: 0,
-            fire_bonus: 0,
-            frost: 0,
-            frost_bonus: 0,
-            lightning: 0,
-            lightning_bonus: 0
+  use Ecto.Schema
+
+  schema "weapons" do
+    field(:name, :string)
+    field(:class, :string)
+    field(:type, :string, default: "")
+    field(:set, :string, default: "")
+    field(:protection, :integer, default: 0)
+    field(:barrier, :integer, default: 0)
+    field(:impact_resistance, :integer, default: 0)
+    field(:mana_cost_reduction, :integer, default: 0)
+    field(:stamcost, :integer, default: 0)
+    field(:attackspeed, :integer, default: 0)
+    field(:effects, :string, default: "")
+    field(:impact, :integer, default: 0)
+    field(:physical, :integer, default: 0)
+    field(:physical_bonus, :integer, default: 0)
+    field(:decay, :integer, default: 0)
+    field(:decay_bonus, :integer, default: 0)
+    field(:ethereal_bonus, :integer, default: 0)
+    field(:ethereal, :integer, default: 0)
+    field(:fire, :integer, default: 0)
+    field(:fire_bonus, :integer, default: 0)
+    field(:frost, :integer, default: 0)
+    field(:frost_bonus, :integer, default: 0)
+    field(:lightning, :integer, default: 0)
+    field(:lightning_bonus, :integer, default: 0)
+  end
 end

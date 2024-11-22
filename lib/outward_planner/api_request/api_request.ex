@@ -3,6 +3,7 @@ defmodule OutwardPlanner.ApiRequest do
   Functionality to query Wiki.gg REST API for page IDs in categories and page content.
   """
   alias OutwardPlanner.Query
+  alias OutwardPlanner.Repo
 
   def request_category(category) do
     Req.get!(Query.Category.new(category))
@@ -16,7 +17,7 @@ defmodule OutwardPlanner.ApiRequest do
     end
   end
 
-  def request_page(category) do
+  def request_pages(category) do
     with pages <- request_category(category),
          pageids <-
            pages
@@ -29,6 +30,12 @@ defmodule OutwardPlanner.ApiRequest do
       |> Enum.map(& &1.body["query"]["pages"])
       |> Enum.map(&Query.Parser.extract_page_content/1)
       |> Enum.concat()
+      |> insert_pages()
     end
+  end
+
+  defp insert_pages(pages) do
+    pages
+    |> Enum.map(&Repo.insert!/1)
   end
 end
