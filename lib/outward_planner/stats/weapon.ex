@@ -1,6 +1,6 @@
 defmodule OutwardPlanner.Stats.Weapon do
   @moduledoc """
-  Weapon struct.
+  Weapon schema.
 
   Elements without bonus refer to flat damage.
 
