@@ -24,7 +24,9 @@ defmodule OutwardPlanner.MixProject do
   defp deps do
     [
       {:credo, "~> 1.2", only: [:dev, :test], runtime: false},
-      {:req, "~> 0.5.0"}
+      {:req, "~> 0.5.0"},
+      {:ecto_sql, "~> 3.12"},
+      {:ecto_sqlite3, "~> 0.17"}
     ]
   end
 

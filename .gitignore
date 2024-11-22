@@ -27,3 +27,6 @@ outward_planner-*.tar
 
 # Escript folder
 /.escript/*
+
+# DB file
+outward.db
