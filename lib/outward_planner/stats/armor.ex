@@ -1,6 +1,6 @@
 defmodule OutwardPlanner.Stats.Armor do
   @moduledoc """
-  Armor struct.
+  Armor schema.
 
   Elements without bonus refer to resistance.
 
