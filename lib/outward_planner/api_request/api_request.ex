@@ -30,12 +30,23 @@ defmodule OutwardPlanner.ApiRequest do
       |> Enum.map(& &1.body["query"]["pages"])
       |> Enum.map(&Query.Parser.extract_page_content/1)
       |> Enum.concat()
-      |> insert_pages()
     end
   end
 
-  defp insert_pages(pages) do
-    pages
-    |> Enum.map(&Repo.insert!/1)
+  # DRAFT
+  # def exists_in_db?() do
+  #   OutwardPlanner.ApiRequest.request_category(:lexicons)
+  #   |> Enum.map(fn map ->
+  #     map
+  #     |> Map.new(fn
+  #       {"title", value} -> {"name", value}
+  #       {key, value} -> {key, value}
+  #     end)
+  #   end)
+  # end
+
+  def insert_pages(category) when is_atom(category) do
+    request_pages(category)
+    |> Enum.map(&Repo.insert(&1, on_conflict: :nothing))
   end
 end
