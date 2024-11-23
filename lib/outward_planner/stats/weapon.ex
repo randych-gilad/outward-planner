@@ -11,7 +11,6 @@ defmodule OutwardPlanner.Stats.Weapon do
   schema "weapons" do
     field :name, :string
     field :class, :string
-    field :type, :string, default: ""
     field :set, :string, default: ""
     field :protection, :integer, default: 0
     field :barrier, :integer, default: 0

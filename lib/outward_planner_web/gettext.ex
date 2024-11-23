@@ -20,5 +20,6 @@ defmodule OutwardPlannerWeb.Gettext do
 
   See the [Gettext Docs](https://hexdocs.pm/gettext) for detailed usage.
   """
-  use Gettext, otp_app: :outward_planner
+  use Gettext.Backend, otp_app: :outward_planner
+  use Gettext, backend: MyApp.Gettext
 end

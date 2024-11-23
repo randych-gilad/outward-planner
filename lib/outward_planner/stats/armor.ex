@@ -11,7 +11,6 @@ defmodule OutwardPlanner.Stats.Armor do
   schema "armor" do
     field :name, :string
     field :class, :string
-    field :type, :string
     field :set, :string, default: ""
     field :protection, :integer, default: 0
     field :barrier, :integer, default: 0
