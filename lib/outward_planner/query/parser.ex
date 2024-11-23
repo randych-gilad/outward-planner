@@ -115,23 +115,8 @@ defmodule OutwardPlanner.Query.Parser do
     end)
   end
 
-  defp decide_struct_category!(%{name: name, skilltype: skilltype} = skill) do
-    subtype = Map.get(skill, :subtype)
-
-    case {skilltype, subtype} do
-      {_, "Breakthrough"} ->
-        %Stats.Skill.Breakthrough{}
-
-      {"Active", _} ->
-        %Stats.Skill.Active{}
-
-      {"Passive", _} ->
-        %Stats.Skill.Passive{}
-
-      _ ->
-        raise ArgumentError,
-              "Invalid skilltype #{skilltype} and/or subtype #{subtype} of skill #{name}"
-    end
+  defp decide_struct_category!(%{name: _, skilltype: _} = skill) do
+    skill
   end
 
   defp decide_struct_category!(%{name: name, class: class}) do
