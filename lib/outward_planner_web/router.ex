@@ -17,7 +17,8 @@ defmodule OutwardPlannerWeb.Router do
   scope "/", OutwardPlannerWeb do
     pipe_through :browser
 
-    get "/", PageController, :home
+    # get "/", PageController, :home
+    live "/", Page
   end
 
   # Other scopes may use custom stacks.
