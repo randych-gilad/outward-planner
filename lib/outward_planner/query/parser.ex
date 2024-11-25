@@ -128,18 +128,21 @@ defmodule OutwardPlanner.Query.Parser do
   defp format_struct_value(value) when is_binary(value) do
     case Float.parse(value) do
       :error ->
-        cond do
-          value in ["Starter", "Instant", "permanent"] ->
+        case value do
+          value when value in ["Starter", "Instant", "permanent"] ->
             0
 
-          value == "Quest" ->
+          "Quest" ->
             4
 
-          String.contains?(value, "None") ->
-            0
+          _ ->
+            cond do
+              String.contains?(value, "None") ->
+                0
 
-          true ->
-            value
+              true ->
+                value
+            end
         end
 
       {parsed_number, _} ->
