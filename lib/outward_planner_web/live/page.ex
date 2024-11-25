@@ -10,17 +10,17 @@ defmodule OutwardPlannerWeb.Page do
       <%= for weapon <- @weapons do %>
         <option value="{@weapon}"><%= weapon %></option>
       <% end %>
-    </select>
+    </select><br>
 
     <label for="armors-dropdown">Choose an armor:</label>
     <select id="armors-dropdown" name="armors-dropdown">
       <%= for armor <- @armors do %>
         <option value="{@armor}"><%= armor %></option>
       <% end %>
-    </select>
+    </select><br>
 
-    <label for="skills-dropdown">Choose a spell:</label>
-    <select id="skills-dropdown" name="spells-dropdown">
+    <label for="skills-dropdown">Choose a skill:</label>
+    <select id="skills-dropdown" name="skills-dropdown">
       <%= for skill <- @skills do %>
         <option value="{@skill}"><%= skill %></option>
       <% end %>
