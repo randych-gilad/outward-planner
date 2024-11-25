@@ -8,13 +8,47 @@ defmodule OutwardPlanner.Query.Parser do
   @offhand ~w(Chakrams Daggers Pistols Lanterns Lexicons Shields)
   @weapons @mainhand ++ @offhand
   @armor ~w(Helmets Boots Backpacks) ++ ["Body Armor"]
-  @skill_types ~w(Breakthrough)
+  @skills ~w(Breakthrough Skills)
+  @skill_class [
+    "Kazite Spellblade",
+    "Mercenary",
+    "Passive Skills",
+    "Hex Mage",
+    "Philosopher",
+    "Rune Sage",
+    "Primal Ritualist",
+    "Rogue Engineer",
+    "Weapon Master",
+    "Warrior Monk",
+    "Wild Hunter",
+    "The Speedster",
+    "Specialist"
+  ]
+  @unwanted_pages @weapons ++
+                    @armor ++
+                    @skills ++
+                    @skill_class ++
+                    [
+                      "Call to Elements",
+                      "Cabal Hermit",
+                      "Jinx",
+                      "Shamanic Resonance",
+                      "Probe",
+                      "Sigils",
+                      "Skill preload",
+                      "Template:Skill preload",
+                      "Category:Skill Combinations",
+                      "Category:Active Skills",
+                      "Category:Passive Skills",
+                      "Skill Combinations"
+                    ]
 
   def extract_page_content(%{} = page) do
     page
     |> Map.values()
+    |> Enum.reject(&exclude_category_page/1)
     |> Enum.map(fn page ->
-      title = page["title"]
+      name = page["title"]
 
       content =
         List.first(page["revisions"])["slots"]["main"]["*"]
@@ -29,9 +63,8 @@ defmodule OutwardPlanner.Query.Parser do
         {atom_key, parsed_value}
       end)
       |> Enum.into(%{})
-      |> Map.put(:name, title)
+      |> Map.put(:name, name)
     end)
-    |> Enum.reject(&exclude_category_page/1)
     |> Enum.map(&exclude_empty_values/1)
     |> Enum.map(&struct!(decide_struct_category!(&1), &1))
   end
@@ -41,8 +74,10 @@ defmodule OutwardPlanner.Query.Parser do
       "{{",
       "}}",
       "image",
+      "description",
       "object",
       "count",
+      "cost",
       "ingredient",
       "style",
       "buy",
@@ -52,17 +87,28 @@ defmodule OutwardPlanner.Query.Parser do
       "weight",
       "durability",
       "size",
+      "value",
+      "hunger",
+      "drink",
+      "rest",
       "reach",
       "manual",
       "prereq",
+      "requires",
+      "consumes",
+      "sourceType",
+      "valueType",
       "action0",
       "action1",
       "action2",
+      "multipliers",
       "location",
       "blacksmith",
       "station",
       "slot",
-      "trainer"
+      "trainer",
+      "quest",
+      "notes"
     ])
   end
 
@@ -82,18 +128,44 @@ defmodule OutwardPlanner.Query.Parser do
   defp format_struct_value(value) when is_binary(value) do
     case Float.parse(value) do
       :error ->
-        value
+        case value do
+          "Starter" ->
+            0
+
+          "Instant" ->
+            0
+
+          "permanent" ->
+            0
+
+          "Quest" ->
+            4
+        end
+
+        cond do
+          String.contains?(value, "None") ->
+            0
+
+          true ->
+            value
+        end
 
       {parsed_number, _} ->
-        case String.contains?(value, ".") do
-          true -> Float.round(parsed_number)
-          false -> trunc(parsed_number)
+        case String.contains?(value, ".0") do
+          true ->
+            Float.round(parsed_number)
+
+          false ->
+            case String.starts_with?(value, "+") do
+              true -> value
+              false -> trunc(parsed_number)
+            end
         end
     end
   end
 
   defp exclude_category_page(page) do
-    page.name in (@weapons ++ @armor ++ @skill_types)
+    page["title"] in @unwanted_pages
   end
 
   defp exclude_empty_values(pages) do
@@ -115,8 +187,8 @@ defmodule OutwardPlanner.Query.Parser do
     end)
   end
 
-  defp decide_struct_category!(%{name: _, skilltype: _} = skill) do
-    skill
+  defp decide_struct_category!(%{name: _, skilltype: _}) do
+    %Stats.Skill{}
   end
 
   defp decide_struct_category!(%{name: name, class: class}) do
@@ -142,5 +214,10 @@ defmodule OutwardPlanner.Query.Parser do
           true -> raise ArgumentError, "Invalid class #{class} of item #{name}"
         end
     end
+  end
+
+  defp decide_struct_category!(%{name: name} = item) do
+    IO.inspect(item)
+    raise ArgumentError, "Invalid item of name #{name}"
   end
 end
