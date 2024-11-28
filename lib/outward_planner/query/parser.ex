@@ -31,8 +31,6 @@ defmodule OutwardPlanner.Query.Parser do
                     [
                       "Call to Elements",
                       "Cabal Hermit",
-                      "Jinx",
-                      "Shamanic Resonance",
                       "Probe",
                       "Sigils",
                       "Skill preload",
@@ -40,7 +38,9 @@ defmodule OutwardPlanner.Query.Parser do
                       "Category:Skill Combinations",
                       "Category:Active Skills",
                       "Category:Passive Skills",
-                      "Skill Combinations"
+                      "Skill Combinations",
+                      "Shamanic Resonance",
+                      "Jinx"
                     ]
 
   def extract_page_content(%{} = page) do
