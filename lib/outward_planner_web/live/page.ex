@@ -2,6 +2,7 @@ defmodule OutwardPlannerWeb.Page do
   use OutwardPlannerWeb, :live_view
   import Ecto.Query, except: [update: 3]
   alias OutwardPlanner.Repo
+  alias OutwardPlanner.Stats
 
   def render(assigns) do
     ~H"""
@@ -9,6 +10,13 @@ defmodule OutwardPlannerWeb.Page do
     <select id="weapons-dropdown" name="weapons-dropdown">
       <%= for weapon <- @weapons do %>
         <option value="{@weapon}"><%= weapon %></option>
+      <% end %>
+    </select><br>
+
+    <label for="offhands-dropdown">Choose an off-hand weapon:</label>
+    <select id="offhands-dropdown" name="offhands-dropdown">
+      <%= for offhand <- @offhands do %>
+        <option value="{@offhand}"><%= offhand %></option>
       <% end %>
     </select><br>
 
@@ -29,10 +37,23 @@ defmodule OutwardPlannerWeb.Page do
   end
 
   def mount(_params, _session, socket) do
-    weapons = Repo.all(from w in OutwardPlanner.Stats.Weapon, select: w.name)
-    armors = Repo.all(from a in OutwardPlanner.Stats.Armor, select: a.name)
-    skills = Repo.all(from s in OutwardPlanner.Stats.Skill, select: s.name)
+    weapons =
+      Repo.all(
+        from w in Stats.Weapon,
+          where: w.class not in ["Offhand", "Lexicon", "Lantern"],
+          select: w.name
+      )
 
-    {:ok, assign(socket, weapons: weapons, armors: armors, skills: skills)}
+    offhands =
+      Repo.all(
+        from w in Stats.Weapon,
+          where: w.class in ["Offhand", "Lexicon", "Lantern"],
+          select: w.name
+      )
+
+    armors = Repo.all(from a in Stats.Armor, select: a.name)
+    skills = Repo.all(from s in Stats.Skill, select: s.name)
+
+    {:ok, assign(socket, weapons: weapons, offhands: offhands, armors: armors, skills: skills)}
   end
 end
