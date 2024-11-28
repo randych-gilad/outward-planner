@@ -31,7 +31,6 @@ defmodule OutwardPlanner.Query.Parser do
                     [
                       "Call to Elements",
                       "Cabal Hermit",
-                      "Probe",
                       "Sigils",
                       "Skill preload",
                       "Template:Skill preload",
@@ -40,6 +39,7 @@ defmodule OutwardPlanner.Query.Parser do
                       "Category:Passive Skills",
                       "Skill Combinations",
                       "Shamanic Resonance",
+                      "Probe",
                       "Jinx"
                     ]
 
